@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rotating Hollow 3D Cube Spawn</title>
+  <title>Rotating 3D Cube Spawn</title>
   <style>
     /* Style for the cube */
     .cube-container {
@@ -17,8 +17,7 @@
       width: 100%;
       height: 100%;
       transform-style: preserve-3d;
-      transform: rotateX(45deg) rotateY(45deg);
-      animation: rotate 10s infinite linear;
+      animation: rotate 1s infinite linear;
     }
 
     .face {
@@ -35,18 +34,24 @@
     .face:nth-child(4) { transform: rotateY(-90deg) translateZ(100px); }
     .face:nth-child(5) { transform: rotateX(90deg) translateZ(100px); }
     .face:nth-child(6) { transform: rotateX(-90deg) translateZ(100px); }
+
+    /* Animation to rotate the cube */
+    @keyframes rotate {
+      from { transform: rotateX(0deg) rotateY(0deg); }
+      to { transform: rotateX(360deg) rotateY(360deg); }
+    }
   </style>
 </head>
 <body>
   <script>
-    let count = 1;
-
     function createCubes() {
       const container = document.createElement('div');
       container.classList.add('cube-container');
       document.body.appendChild(container);
 
-      for (let i = 0; i < count; i++) {
+      const randomCubes = Math.floor(Math.random() * 10) + 1;
+
+      for (let i = 0; i < randomCubes; i++) {
         const cube = document.createElement('div');
         cube.classList.add('cube');
 
@@ -58,8 +63,6 @@
 
         container.appendChild(cube);
       }
-
-      count += 5; // Increase the count by 5 for the next click
     }
 
     document.addEventListener('click', createCubes);
