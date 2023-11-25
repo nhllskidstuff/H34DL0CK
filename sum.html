@@ -3,15 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hollow 3D Cube Spawn</title>
+  <title>Rotating Hollow 3D Cube Spawn</title>
   <style>
     /* Style for the cube */
+    .cube-container {
+      perspective: 800px;
+      width: 200px;
+      height: 200px;
+      margin: 100px auto;
+    }
+
     .cube {
-      width: 40px;
-      height: 40px;
-      position: absolute;
+      width: 100%;
+      height: 100%;
       transform-style: preserve-3d;
       transform: rotateX(45deg) rotateY(45deg);
+      animation: rotate 10s infinite linear;
     }
 
     .face {
@@ -19,14 +26,15 @@
       height: 100%;
       border: 2px solid #3498db;
       position: absolute;
+      box-sizing: border-box;
     }
 
-    .face:nth-child(1) { transform: rotateY(0deg) translateZ(20px); }
-    .face:nth-child(2) { transform: rotateY(90deg) translateZ(20px); }
-    .face:nth-child(3) { transform: rotateY(180deg) translateZ(20px); }
-    .face:nth-child(4) { transform: rotateY(-90deg) translateZ(20px); }
-    .face:nth-child(5) { transform: rotateX(90deg) translateZ(20px); }
-    .face:nth-child(6) { transform: rotateX(-90deg) translateZ(20px); }
+    .face:nth-child(1) { transform: rotateY(0deg) translateZ(100px); }
+    .face:nth-child(2) { transform: rotateY(90deg) translateZ(100px); }
+    .face:nth-child(3) { transform: rotateY(180deg) translateZ(100px); }
+    .face:nth-child(4) { transform: rotateY(-90deg) translateZ(100px); }
+    .face:nth-child(5) { transform: rotateX(90deg) translateZ(100px); }
+    .face:nth-child(6) { transform: rotateX(-90deg) translateZ(100px); }
   </style>
 </head>
 <body>
@@ -41,8 +49,6 @@
       for (let i = 0; i < count; i++) {
         const cube = document.createElement('div');
         cube.classList.add('cube');
-        cube.style.left = `${Math.random() * (window.innerWidth - 40)}px`;
-        cube.style.top = `${Math.random() * (window.innerHeight - 40)}px`;
 
         for (let j = 1; j <= 6; j++) {
           const face = document.createElement('div');
@@ -53,7 +59,7 @@
         container.appendChild(cube);
       }
 
-      count *= 2; // Double the count for the next click
+      count += 5; // Increase the count by 5 for the next click
     }
 
     document.addEventListener('click', createCubes);
