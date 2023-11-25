@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spinning Cubes with Infinite Zoom</title>
+  <style>
+    body { margin: 0; overflow: hidden; font-family: 'Orbitron', sans-serif; }
+    canvas { display: block; }
+    #cubeCount {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      color: red;
+      font-size: 75px;
+    }
+  </style>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap">
+</head>
+<body>
+  <div id="cubeCount">Cube Count: 1</div>
+  <script type="module">
+    import * as THREE from 'https://threejs.org/build/three.module.js';
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    const cubeGeometry = new THREE.BoxGeometry();
+    const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0xFF00FF, wireframe: true });
+    const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+    scene.add(cube);
+
+    camera.position.z = 5;
+
+    document.addEventListener('click', onClick);
+    document.addEventListener('wheel', onWheel);
+
+    let cubeCount = 1;
+    const cubeCountElement = document.getElementById('cubeCount');
+
+    function onClick(event) {
+      const mouse = new THREE.Vector2();
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(scene.children);
+
+      if (intersects.length > 0) {
+        breakCube(intersects[0].object);
+      }
+    }
+
+    function onWheel(event) {
+      camera.position.z += event.deltaY * 0.005;
+      if (camera.position.z < 2) camera.position.z = 2;
+      if (camera.position.z > 10) camera.position.z = 10;
+    }
+
+    function breakCube(parentCube) {
+      parentCube.geometry.dispose();
+
+      const smallerCubes = [];
+      const smallerCubeMaterial = new THREE.MeshBasicMaterial({ color: 0xFF00FF, wireframe: true });
+
+      for (let i = 0; i < 8; i++) {
+        const smallerCube = new THREE.Mesh(new THREE.BoxGeometry(), smallerCubeMaterial);
+        smallerCubes.push(smallerCube);
+        scene.add(smallerCube);
+        smallerCube.rotationSpeed = {
+          x: (Math.random() - 0.5) * 0.2,
+          y: (Math.random() - 0.5) * 0.2,
+        };
+      }
+
+      const positions = [
+        { x: -1, y: 1, z: -1 },
+        { x: 1, y: 1, z: -1 },
+        { x: -1, y: 1, z: 1 },
+        { x: 1, y: 1, z: 1 },
+        { x: -1, y: -1, z: -1 },
+        { x: 1, y: -1, z: -1 },
+        { x: -1, y: -1, z: 1 },
+        { x: 1, y: -1, z: 1 },
+      ];
+
+      for (let i = 0; i < 8; i++) {
+        smallerCubes[i].position.set(
+          parentCube.position.x + positions[i].x,
+          parentCube.position.y + positions[i].y,
+          parentCube.position.z + positions[i].z
+        );
+      }
+
+      scene.remove(parentCube);
+      cubeCount += 7;
+      cubeCountElement.textContent = `Cube Count: ${cubeCount}`;
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
+
+      scene.children.forEach((child) => {
+        if (child !== cube) {
+          child.rotation.x += child.rotationSpeed.x;
+          child.rotation.y += child.rotationSpeed.y;
+        }
+      });
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+  </script>
+</body>
+</html>
