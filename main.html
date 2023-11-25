@@ -3,55 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spinning Cube</title>
+  <title>Hollow 3D Cube Spawn</title>
   <style>
-    .cube-container {
-      perspective: 800px;
-      width: 200px;
-      height: 200px;
-      margin: 100px auto;
-    }
-
+    /* Style for the cube */
     .cube {
-      width: 100%;
-      height: 100%;
+      width: 40px;
+      height: 40px;
+      position: absolute;
       transform-style: preserve-3d;
       transform: rotateX(45deg) rotateY(45deg);
-      animation: spin 1s infinite linear;
     }
 
     .face {
+      width: 100%;
+      height: 100%;
+      border: 2px solid #3498db;
       position: absolute;
-      width: 200px;
-      height: 200px;
-      border: 2px solid #333;
-      background-color: rgba(255, 255, 255, 0.9);
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
-    .face:nth-child(1) { transform: rotateY(0deg) translateZ(100px); }
-    .face:nth-child(2) { transform: rotateY(90deg) translateZ(100px); }
-    .face:nth-child(3) { transform: rotateY(180deg) translateZ(100px); }
-    .face:nth-child(4) { transform: rotateY(-90deg) translateZ(100px); }
-    .face:nth-child(5) { transform: rotateX(90deg) translateZ(100px); }
-    .face:nth-child(6) { transform: rotateX(-90deg) translateZ(100px); }
-
-    @keyframes spin {
-      from { transform: rotateX(0deg) rotateY(0deg); }
-      to { transform: rotateX(360deg) rotateY(360deg); }
-    }
+    .face:nth-child(1) { transform: rotateY(0deg) translateZ(20px); }
+    .face:nth-child(2) { transform: rotateY(90deg) translateZ(20px); }
+    .face:nth-child(3) { transform: rotateY(180deg) translateZ(20px); }
+    .face:nth-child(4) { transform: rotateY(-90deg) translateZ(20px); }
+    .face:nth-child(5) { transform: rotateX(90deg) translateZ(20px); }
+    .face:nth-child(6) { transform: rotateX(-90deg) translateZ(20px); }
   </style>
 </head>
 <body>
-  <div class="cube-container">
-    <div class="cube">
-      <div class="face"></div>
-      <div class="face"></div>
-      <div class="face"></div>
-      <div class="face"></div>
-      <div class="face"></div>
-      <div class="face"></div>
-    </div>
-  </div>
+  <script>
+    let count = 1;
+
+    function createCubes() {
+      const container = document.createElement('div');
+      container.classList.add('cube-container');
+      document.body.appendChild(container);
+
+      for (let i = 0; i < count; i++) {
+        const cube = document.createElement('div');
+        cube.classList.add('cube');
+        cube.style.left = `${Math.random() * (window.innerWidth - 40)}px`;
+        cube.style.top = `${Math.random() * (window.innerHeight - 40)}px`;
+
+        for (let j = 1; j <= 6; j++) {
+          const face = document.createElement('div');
+          face.classList.add('face');
+          cube.appendChild(face);
+        }
+
+        container.appendChild(cube);
+      }
+
+      count *= 2; // Double the count for the next click
+    }
+
+    document.addEventListener('click', createCubes);
+  </script>
 </body>
 </html>
